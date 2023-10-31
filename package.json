@@ -25,5 +25,8 @@
         "not dead",
         "not ie <= 11",
         "not op_mini all"
-    ]
+    ],
+    "repository": "https://github.com/farrell-dan/react-state-P2.git",
+    "author": "farrell-dan <140118556+farrell-dan@users.noreply.github.com>",
+    "license": "MIT"
 }
