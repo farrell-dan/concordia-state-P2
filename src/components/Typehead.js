@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
 
-const Typehead = ({ suggestions, handleSelect }) => {
+const Typehead = ({ suggestions, handleSelect, categories }) => {
   const [inputValue, setInputValue] = useState("");
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
 
@@ -25,9 +25,16 @@ const Typehead = ({ suggestions, handleSelect }) => {
       handleSelect(filteredSuggestions[0].title);
     }
   };
+
   const handleClear = () => {
     setInputValue("");
     setFilteredSuggestions([]);
+  };
+
+  const splitString = (str, index) => {
+    const firstHalf = str.slice(0, index);
+    const secondHalf = str.slice(index);
+    return [firstHalf, secondHalf];
   };
 
   return (
@@ -42,12 +49,31 @@ const Typehead = ({ suggestions, handleSelect }) => {
       </TopWrapper>
       <ul>
         {filteredSuggestions.map((suggestion) => {
+          const lowerCaseInput = inputValue.toLowerCase();
+          const lowerCaseSuggestion = suggestion.title.toLowerCase();
+          const matchIndex = lowerCaseSuggestion.indexOf(lowerCaseInput);
+
+          const [firstHalf, secondHalf] = splitString(
+            suggestion.title,
+            matchIndex + inputValue.length
+          );
+
+          const category = categories[suggestion.categoryId];
+
           return (
             <Suggestion
               key={suggestion.id}
               onClick={() => handleSelect(suggestion.title)}
             >
-              {suggestion.title}
+              <span>
+                {firstHalf}
+                <Prediction>{secondHalf}</Prediction>
+              </span>
+              {category && (
+          <CategoryTitle>
+            <CategoryTitleText>{category.name}</CategoryTitleText>
+          </CategoryTitle>
+        )}
             </Suggestion>
           );
         })}
@@ -59,7 +85,6 @@ const Typehead = ({ suggestions, handleSelect }) => {
 export default Typehead;
 
 const Wrapper = styled.div`
-  background-color: lightpink;
   width: 75%;
 `;
 
@@ -78,7 +103,23 @@ const ClearBTN = styled.button`
 
 const Suggestion = styled.li`
 padding-top: 10px;
+background-color: lightgreen;
 :hover{
     background-color: lightgoldenrodyellow;
 }
 `
+
+const Prediction = styled.span`
+  font-weight: bold;
+`;
+
+const CategoryTitle = styled.div`
+  color: purple;
+  font-style: italic;
+`;
+
+const CategoryTitleText = styled.div`
+  color: purple;
+  font-style: italic;
+  font-size: 12px;
+`;
